@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"go.opencensus.io/stats"
-	"go.opencensus.io/zpages"
+	// "go.opencensus.io/zpages"
 
 	"go.opencensus.io/exporter/jaeger"
 	"go.opencensus.io/exporter/prometheus"
@@ -82,8 +82,8 @@ func init() {
 	// Set reporting period to report data at every second.
 	view.SetReportingPeriod(1 * time.Second)
 
-	http.HandleFunc("/rpcz", zpages.RpczHandler)
-	http.HandleFunc("/tracez", zpages.TracezHandler)
+	// http.HandleFunc("/rpcz", zpages.RpczHandler)
+	// http.HandleFunc("/tracez", zpages.TracezHandler)
 }
 
 func main() {

@@ -19,17 +19,17 @@ PROMETHEUS_POD_NAME=$(shell kubectl -n istio-system get pod -l app=prometheus -o
 create-cluster:
 	gcloud beta container --project "$(PROJECT_ID)" clusters create "my-istio-cluster" --zone "$(ZONE)" --username="admin" --machine-type "n1-standard-1" --image-type "COS" --disk-size "100" --scopes "https://www.googleapis.com/auth/compute","https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --enable-kubernetes-alpha --num-nodes "4" --network "default" --enable-cloud-logging --enable-cloud-monitoring --enable-legacy-authorization
 deploy-infra:
-	kubectl apply -f 'https://raw.githubusercontent.com/istio/istio/4bc1381/install/kubernetes/istio.yaml'
+	-kubectl apply -f 'https://raw.githubusercontent.com/istio/istio/4bc1381/install/kubernetes/istio.yaml'
 	kubectl apply -f 'https://raw.githubusercontent.com/istio/istio/4bc1381/install/kubernetes/istio-initializer.yaml'
 	kubectl apply -n istio-system -f 'https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml'
 	kubectl apply -f './config/prometheus.yaml'
 	kubectl apply -f 'https://raw.githubusercontent.com/istio/istio/4bc1381/install/kubernetes/addons/servicegraph.yaml'
 	kubectl apply -f 'https://raw.githubusercontent.com/istio/istio/4bc1381/install/kubernetes/addons/grafana.yaml'
-deploy-stuff:
+deploy-app:
 	kubectl apply -f ./config/config.yaml
 	kubectl apply -f ./config/services.yaml
 	-sed -e 's~<PROJECT_ID>~$(PROJECT_ID)~g' ./config/deployment.yaml | kubectl apply -f -
-get-stuff:
+get-app:
 	kubectl get pods && kubectl get svc && kubectl get ingress
 
 
@@ -53,6 +53,6 @@ stop-all:
 	kubectl delete deployments --all
 	kubectl -n istio-system delete pods --all
 delete-cluster:
-	kubectl delete service frontend
-	kubectl delete ingress istio-ingress
-	gcloud container clusters delete "my-istio-cluster" --zone "$(ZONE)"
+	-kubectl delete service frontend
+	-kubectl delete ingress istio-ingress
+	-gcloud container clusters delete "my-istio-cluster" --zone "$(ZONE)"
